@@ -1,0 +1,50 @@
+plugins {
+	id 'java'
+	alias(libs.plugins.spring.framework)
+	alias(libs.plugins.spring.dependency.management)
+}
+
+group = 'com.cheerz'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(23)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation libs.spring.boot.mvc
+	implementation libs.spring.boot.data.jpa
+	implementation libs.spring.boot.validation
+	implementation libs.postgresql
+	implementation libs.flyway
+	implementation libs.flyway.postgresql
+
+	testImplementation libs.spring.boot.test
+	testImplementation libs.spring.boot.test.autoconfigure
+	testImplementation libs.assertj
+	testImplementation libs.mockito.core
+	testImplementation libs.mockito.inline
+	testImplementation libs.mockito.junit.jupiter
+	testImplementation libs.byte.buddy
+	testImplementation libs.byte.buddy.agent
+	testImplementation libs.junit
+}
+
+test {
+	useJUnitPlatform()
+
+	jvmArgs += [
+		'-XX:+EnableDynamicAgentLoading',
+		'-Xshare:off'
+	]
+}
+
+bootJar {
+	archiveFileName = 'app.jar'
+}

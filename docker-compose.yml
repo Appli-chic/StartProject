@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    environment:
+      POSTGRES_DB: start-project
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+
+  server:
+    image: server-app
+    container_name: server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    stop_grace_period: 1s
+    stop_signal: SIGKILL
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: start-project
+      DB_USER: postgres
+      DB_PASSWORD: postgres
