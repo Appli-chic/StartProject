@@ -2,8 +2,8 @@ package com.cheerz.StartProject.user.service;
 
 import static com.cheerz.StartProject.user.entity.UserEntity.UNIQUE_NAME_CONSTRAINT;
 
-import com.cheerz.StartProject.user.dto.CreateUserRequest;
 import com.cheerz.StartProject.user.dto.ApiUser;
+import com.cheerz.StartProject.user.dto.CreateUserRequest;
 import com.cheerz.StartProject.user.entity.UserEntity;
 import com.cheerz.StartProject.user.exception.UserNameAlreadyExistsException;
 import com.cheerz.StartProject.user.mapper.UserMapper;
@@ -38,8 +38,7 @@ public class UserService {
     @NotNull
     public ApiUser createUser(@NotNull CreateUserRequest createUserRequest) throws UserNameAlreadyExistsException {
         try {
-            UserEntity userToSave = userMapper.toEntity(createUserRequest);
-            UserEntity savedUser = userRepository.save(userToSave);
+            UserEntity savedUser = userRepository.save(createUserRequest.name(), createUserRequest.age());
             return userMapper.toUserResponse(savedUser);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             if (DatabaseExceptionHandler.isConstraintViolation(dataIntegrityViolationException, UNIQUE_NAME_CONSTRAINT)) {

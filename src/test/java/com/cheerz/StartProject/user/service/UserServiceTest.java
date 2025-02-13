@@ -1,5 +1,19 @@
 package com.cheerz.StartProject.user.service;
 
+import static com.cheerz.StartProject.user.dto.ApiUserTestData.JANE_SMITH_USER_RESPONSE;
+import static com.cheerz.StartProject.user.dto.ApiUserTestData.JOHN_DOE_USER_RESPONSE;
+import static com.cheerz.StartProject.user.dto.CreateUserRequestTestData.JOHN_DOE_USER_REQUEST;
+import static com.cheerz.StartProject.user.entity.UserEntityTestData.JANE_SMITH_USER_ENTITY;
+import static com.cheerz.StartProject.user.entity.UserEntityTestData.JOHN_DOE_USER_ENTITY;
+import static com.cheerz.StartProject.user.exception.UserNameAlreadyExistsExceptionTestData.DATA_INTEGRITY_VIOLATION_EXCEPTION;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+
 import com.cheerz.StartProject.user.dto.ApiUser;
 import com.cheerz.StartProject.user.entity.UserEntity;
 import com.cheerz.StartProject.user.exception.UserNameAlreadyExistsException;
@@ -14,20 +28,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
-
-import static com.cheerz.StartProject.user.dto.CreateUserRequestTestData.JOHN_DOE_USER_REQUEST;
-import static com.cheerz.StartProject.user.dto.ApiUserTestData.JANE_SMITH_USER_RESPONSE;
-import static com.cheerz.StartProject.user.dto.ApiUserTestData.JOHN_DOE_USER_RESPONSE;
-import static com.cheerz.StartProject.user.entity.UserEntityTestData.JANE_SMITH_USER_ENTITY;
-import static com.cheerz.StartProject.user.entity.UserEntityTestData.JOHN_DOE_USER_ENTITY;
-import static com.cheerz.StartProject.user.exception.UserNameAlreadyExistsExceptionTestData.DATA_INTEGRITY_VIOLATION_EXCEPTION;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -54,7 +54,8 @@ class UserServiceTest {
     class CreateUserName {
         @Test
         void shouldReturnCreatedUserResponse() {
-            when(userRepository.save(any(UserEntity.class))).thenReturn(JOHN_DOE_USER_ENTITY);
+            when(userRepository.save(JOHN_DOE_USER_REQUEST.name(), JOHN_DOE_USER_REQUEST.age()))
+                .thenReturn(JOHN_DOE_USER_ENTITY);
 
             ApiUser apiUser = userService.createUser(JOHN_DOE_USER_REQUEST);
 
@@ -63,7 +64,8 @@ class UserServiceTest {
 
         @Test
         void shouldThrowUserNameAlreadyExistsException() {
-            when(userRepository.save(any(UserEntity.class))).thenThrow(DATA_INTEGRITY_VIOLATION_EXCEPTION);
+            when(userRepository.save(JOHN_DOE_USER_REQUEST.name(), JOHN_DOE_USER_REQUEST.age()))
+                .thenThrow(DATA_INTEGRITY_VIOLATION_EXCEPTION);
 
             assertThrows(UserNameAlreadyExistsException.class, () ->
                 userService.createUser(JOHN_DOE_USER_REQUEST)
@@ -82,6 +84,7 @@ class UserServiceTest {
                 JOHN_DOE_USER_ENTITY.getAge()
             );
 
+            // TODO: CHeck if I can delete
             doNothing().when(userRepository).updateUserName(any(Long.class), any(String.class));
             when(userRepository.getUserById(JOHN_DOE_USER_ENTITY.getId())).thenReturn(Optional.of(expectedUser));
 
@@ -94,6 +97,7 @@ class UserServiceTest {
 
         @Test
         void shouldThrowEntityNotFoundException() {
+            // TODO: CHeck if I can delete
             doNothing().when(userRepository).updateUserName(any(Long.class), any(String.class));
             when(userRepository.getUserById(-1L)).thenReturn(Optional.empty());
 

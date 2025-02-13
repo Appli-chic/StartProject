@@ -21,5 +21,8 @@ public class UserNameAlreadyExistsExceptionTestData {
         UNIQUE_CONSTRAINT_VIOLATION
     );
 
-    public static final UserNameAlreadyExistsException = new UserNameAlreadyExistsException("User name already exists");
+    public static final UserNameAlreadyExistsException USER_NAME_ALREADY_EXISTS_EXCEPTION = new UserNameAlreadyExistsException(
+        "User name already exists",
+        DATA_INTEGRITY_VIOLATION_EXCEPTION
+    );
 }

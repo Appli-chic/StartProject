@@ -1,5 +1,10 @@
 package com.cheerz.StartProject.user.repository;
 
+import static com.cheerz.StartProject.user.entity.UserEntityTestData.BOB_JOHNSON_USER_ENTITY;
+import static com.cheerz.StartProject.user.entity.UserEntityTestData.JANE_SMITH_USER_ENTITY;
+import static com.cheerz.StartProject.user.entity.UserEntityTestData.JOHN_DOE_USER_ENTITY;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.cheerz.StartProject.user.entity.UserEntity;
 
 import org.junit.jupiter.api.Nested;
@@ -7,20 +12,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import static com.cheerz.StartProject.user.entity.UserEntityTestData.BOB_JOHNSON_USER_ENTITY;
-import static com.cheerz.StartProject.user.entity.UserEntityTestData.JANE_SMITH_USER_ENTITY;
-import static com.cheerz.StartProject.user.entity.UserEntityTestData.JOHN_DOE_USER_ENTITY;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.springframework.context.annotation.Import;
 
 import java.util.List;
 import java.util.Optional;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import(UserRepositoryImpl.class)
 public class UserRepositoryTest {
     @Autowired
-    private UserRepository userRepository;
+    private UserRepositoryImpl userRepository;
 
     @Test
     void getAllUsers_ShouldGetAllUsersInCreationOrder() {

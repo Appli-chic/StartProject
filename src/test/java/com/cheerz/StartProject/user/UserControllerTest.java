@@ -1,9 +1,9 @@
 package com.cheerz.StartProject.user;
 
+import static com.cheerz.StartProject.user.dto.ApiUserTestData.JOHN_DOE_USER_RESPONSE;
 import static com.cheerz.StartProject.user.dto.CreateUserRequestTestData.JOHN_DOE_USER_REQUEST;
 import static com.cheerz.StartProject.user.dto.UpdateNameUserRequestTestData.NEW_NAME_USER_REQUEST;
-import static com.cheerz.StartProject.user.dto.ApiUserTestData.JOHN_DOE_USER_RESPONSE;
-import static com.cheerz.StartProject.user.exception.UserNameAlreadyExistsExceptionTestData.DATA_INTEGRITY_VIOLATION_EXCEPTION;
+import static com.cheerz.StartProject.user.exception.UserNameAlreadyExistsExceptionTestData.USER_NAME_ALREADY_EXISTS_EXCEPTION;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -12,8 +12,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.cheerz.StartProject.user.dto.CreateUserRequest;
 import com.cheerz.StartProject.user.dto.ApiUser;
+import com.cheerz.StartProject.user.dto.CreateUserRequest;
 import com.cheerz.StartProject.user.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -89,7 +89,7 @@ class UserControllerTest {
 
         @Test
         void shouldDisplayUserNameAlreadyExists() throws Exception {
-            when(userService.createUser(any(CreateUserRequest.class))).thenThrow(DATA_INTEGRITY_VIOLATION_EXCEPTION);
+            when(userService.createUser(any(CreateUserRequest.class))).thenThrow(USER_NAME_ALREADY_EXISTS_EXCEPTION);
 
             String createUserRequest = new ObjectMapper().writeValueAsString(JOHN_DOE_USER_REQUEST);
             RequestBuilder requestBuilder = post("/users")
