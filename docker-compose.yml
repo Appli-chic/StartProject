@@ -10,7 +10,6 @@ services:
       - "5433:5432"
 
   server:
-    image: server-app
     container_name: server
     build:
       context: .
