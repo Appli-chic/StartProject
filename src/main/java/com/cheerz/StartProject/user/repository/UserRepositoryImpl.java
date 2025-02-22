@@ -10,6 +10,7 @@ import java.util.Optional;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 
 @Repository
@@ -24,6 +25,7 @@ public class UserRepositoryImpl implements UserRepository {
             .getResultList();
     }
 
+    @Transactional
     public void updateUserName(@NotNull Long userId, @NotNull String name) {
         entityManager.createQuery("UPDATE UserEntity user SET user.name = :name WHERE user.id = :user_id")
             .setParameter("name", name)
@@ -43,6 +45,7 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
+    @Transactional
     @NotNull
     public UserEntity save(@NotNull String name, @NotNull Integer age) {
         UserEntity user = new UserEntity(name, age);
