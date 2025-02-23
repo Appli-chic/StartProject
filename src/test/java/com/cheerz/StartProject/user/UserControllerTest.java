@@ -49,23 +49,6 @@ class UserControllerTest {
             .andExpect(content().json(expectedResponse));
     }
 
-    @Test
-    void updateUserName_ShouldReturnUserUpdated() throws Exception {
-        ApiUser expectedApiUser = ApiUserTestData.copyWithNewName(JOHN_DOE_USER_RESPONSE, NEW_NAME_USER_REQUEST.name());
-
-        when(userService.updateUserName(expectedApiUser.id(), NEW_NAME_USER_REQUEST.name())).thenReturn(expectedApiUser);
-        String expectedResponse = new ObjectMapper().writeValueAsString(expectedApiUser);
-
-        String updateUserNameRequest = new ObjectMapper().writeValueAsString(NEW_NAME_USER_REQUEST);
-        RequestBuilder requestBuilder = patch("/users/{user_id}", expectedApiUser.id())
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(updateUserNameRequest);
-
-        mockMvc.perform(requestBuilder)
-            .andExpect(status().isOk())
-            .andExpect(content().json(expectedResponse));
-    }
-
     @Nested
     class CreateUser {
         @Test
@@ -92,6 +75,39 @@ class UserControllerTest {
             RequestBuilder requestBuilder = post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(createUserRequest);
+
+            mockMvc.perform(requestBuilder)
+                .andExpect(status().isConflict());
+        }
+    }
+
+    @Nested
+    class UpdateUser {
+        @Test
+        void shouldReturnUserUpdated() throws Exception {
+            ApiUser expectedApiUser = ApiUserTestData.copyWithNewName(JOHN_DOE_USER_RESPONSE, NEW_NAME_USER_REQUEST.name());
+
+            when(userService.updateUserName(expectedApiUser.id(), NEW_NAME_USER_REQUEST.name())).thenReturn(expectedApiUser);
+            String expectedResponse = new ObjectMapper().writeValueAsString(expectedApiUser);
+
+            String updateUserNameRequest = new ObjectMapper().writeValueAsString(NEW_NAME_USER_REQUEST);
+            RequestBuilder requestBuilder = patch("/users/{user_id}", expectedApiUser.id())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(updateUserNameRequest);
+
+            mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedResponse));
+        }
+
+        @Test
+        void shouldDisplayUserNameAlreadyExists() throws Exception {
+            when(userService.updateUserName(any(Long.class), any(String.class))).thenThrow(USER_NAME_ALREADY_EXISTS_EXCEPTION);
+
+            String updateUserNameRequest = new ObjectMapper().writeValueAsString(NEW_NAME_USER_REQUEST);
+            RequestBuilder requestBuilder = patch("/users/{user_id}", 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(updateUserNameRequest);
 
             mockMvc.perform(requestBuilder)
                 .andExpect(status().isConflict());

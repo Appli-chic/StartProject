@@ -7,6 +7,8 @@ import java.time.ZoneOffset;
 
 public class UserEntityTestData {
 
+    public static final UserEntity MIKE_SMITH_TO_SAVE_USER_ENTITY = new UserEntity("Mike Smith", 34);
+
     public static final UserEntity JOHN_DOE_USER_ENTITY = new UserEntity(
         1L,
         "John Doe",

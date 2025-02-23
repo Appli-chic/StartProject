@@ -3,6 +3,7 @@ package com.cheerz.StartProject.user.repository;
 import static com.cheerz.StartProject.user.entity.UserEntityTestData.BOB_JOHNSON_USER_ENTITY;
 import static com.cheerz.StartProject.user.entity.UserEntityTestData.JANE_SMITH_USER_ENTITY;
 import static com.cheerz.StartProject.user.entity.UserEntityTestData.JOHN_DOE_USER_ENTITY;
+import static com.cheerz.StartProject.user.entity.UserEntityTestData.MIKE_SMITH_TO_SAVE_USER_ENTITY;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.cheerz.StartProject.user.entity.UserEntity;
@@ -44,6 +45,17 @@ public class UserRepositoryTest {
             .usingRecursiveComparison()
             .ignoringFields("name")
             .isEqualTo(BOB_JOHNSON_USER_ENTITY);
+    }
+
+    @Test
+    void saveUser_ShouldSaveUser() {
+        UserEntity createdUser = userRepository.save(
+            MIKE_SMITH_TO_SAVE_USER_ENTITY.getName(),
+            MIKE_SMITH_TO_SAVE_USER_ENTITY.getAge()
+        );
+
+        assertThat(createdUser.getName()).isEqualTo(MIKE_SMITH_TO_SAVE_USER_ENTITY.getName());
+        assertThat(createdUser.getAge()).isEqualTo(MIKE_SMITH_TO_SAVE_USER_ENTITY.getAge());
     }
 
     @Nested
