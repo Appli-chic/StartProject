@@ -5,7 +5,7 @@ import static com.cheerz.StartProject.user.dto.ApiUserTestData.JOHN_DOE_USER_RES
 import static com.cheerz.StartProject.user.dto.CreateUserRequestTestData.JOHN_DOE_USER_REQUEST;
 import static com.cheerz.StartProject.user.entity.UserEntityTestData.JANE_SMITH_USER_ENTITY;
 import static com.cheerz.StartProject.user.entity.UserEntityTestData.JOHN_DOE_USER_ENTITY;
-import static com.cheerz.StartProject.user.exception.UserNameAlreadyExistsExceptionTestData.DATA_INTEGRITY_VIOLATION_EXCEPTION;
+import static com.cheerz.StartProject.user.exception.UserNameAlreadyExistsExceptionTestData.USER_NAME_ALREADY_EXISTS_EXCEPTION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -13,8 +13,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
-import com.cheerz.StartProject.user.dto.ApiUser;
-import com.cheerz.StartProject.user.entity.UserEntity;
 import com.cheerz.StartProject.user.entity.UserEntityTestData;
 import com.cheerz.StartProject.user.exception.UserNameAlreadyExistsException;
 import com.cheerz.StartProject.user.repository.UserRepository;
@@ -41,11 +39,11 @@ class UserServiceTest {
 
     @Test
     void getAllUsers_ShouldReturnResponseWithAllUsers() {
-        List<ApiUser> expectedApiUserList = List.of(JOHN_DOE_USER_RESPONSE, JANE_SMITH_USER_RESPONSE);
-        List<UserEntity> userEntityList = List.of(JOHN_DOE_USER_ENTITY, JANE_SMITH_USER_ENTITY);
+        var expectedApiUserList = List.of(JOHN_DOE_USER_RESPONSE, JANE_SMITH_USER_RESPONSE);
+        var userEntityList = List.of(JOHN_DOE_USER_ENTITY, JANE_SMITH_USER_ENTITY);
         when(userRepository.getAllUsers()).thenReturn(userEntityList);
 
-        List<ApiUser> apiUserList = userService.getAllUsers();
+        var apiUserList = userService.getAllUsers();
 
         assertEquals(expectedApiUserList, apiUserList);
     }
@@ -57,7 +55,7 @@ class UserServiceTest {
             when(userRepository.save(JOHN_DOE_USER_REQUEST.name(), JOHN_DOE_USER_REQUEST.age()))
                 .thenReturn(JOHN_DOE_USER_ENTITY);
 
-            ApiUser apiUser = userService.createUser(JOHN_DOE_USER_REQUEST);
+            var apiUser = userService.createUser(JOHN_DOE_USER_REQUEST);
 
             assertEquals(JOHN_DOE_USER_RESPONSE, apiUser);
         }
@@ -65,7 +63,7 @@ class UserServiceTest {
         @Test
         void shouldThrowUserNameAlreadyExistsException() {
             when(userRepository.save(JOHN_DOE_USER_REQUEST.name(), JOHN_DOE_USER_REQUEST.age()))
-                .thenThrow(DATA_INTEGRITY_VIOLATION_EXCEPTION);
+                .thenThrow(USER_NAME_ALREADY_EXISTS_EXCEPTION);
 
             assertThrows(UserNameAlreadyExistsException.class, () ->
                 userService.createUser(JOHN_DOE_USER_REQUEST)
@@ -77,12 +75,12 @@ class UserServiceTest {
     class UpdateUserName {
         @Test
         void shouldUpdateUserName() {
-            String newName = "New Name";
-            UserEntity expectedUser = UserEntityTestData.copyWithNewName(JOHN_DOE_USER_ENTITY, newName);
+            var newName = "New Name";
+            var expectedUser = UserEntityTestData.copyWithNewName(JOHN_DOE_USER_ENTITY, newName);
 
             when(userRepository.getUserById(JOHN_DOE_USER_ENTITY.getId())).thenReturn(Optional.of(expectedUser));
 
-            ApiUser newUser = userService.updateUserName(JOHN_DOE_USER_ENTITY.getId(), newName);
+            var newUser = userService.updateUserName(JOHN_DOE_USER_ENTITY.getId(), newName);
 
             assertThat(newUser)
                 .usingRecursiveComparison()
@@ -100,7 +98,7 @@ class UserServiceTest {
 
         @Test
         void shouldThrowUserNameAlreadyExistsException() {
-            doThrow(DATA_INTEGRITY_VIOLATION_EXCEPTION)
+            doThrow(USER_NAME_ALREADY_EXISTS_EXCEPTION)
                 .when(userRepository)
                 .updateUserName(any(Long.class), any(String.class));
 

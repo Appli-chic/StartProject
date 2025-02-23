@@ -4,8 +4,6 @@ import static com.cheerz.StartProject.user.dto.ApiUserTestData.JOHN_DOE_USER_RES
 import static com.cheerz.StartProject.user.entity.UserEntityTestData.JOHN_DOE_USER_ENTITY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.cheerz.StartProject.user.dto.ApiUser;
-
 import org.junit.jupiter.api.Test;
 
 class UserMapperTest {
@@ -13,7 +11,7 @@ class UserMapperTest {
 
     @Test
     void toUserResponse_ShouldMapUserEntityToUserResponse() {
-        ApiUser apiUser = userMapper.toUserResponse(JOHN_DOE_USER_ENTITY);
+        var apiUser = userMapper.toUserResponse(JOHN_DOE_USER_ENTITY);
         assertEquals(JOHN_DOE_USER_RESPONSE, apiUser);
     }
 }

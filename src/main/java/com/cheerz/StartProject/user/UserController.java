@@ -36,7 +36,7 @@ public class UserController {
     @PostMapping()
     ResponseEntity<ApiUser> createUser(@NotNull @Valid @RequestBody CreateUserRequest createUserRequest) {
         try {
-            ApiUser apiUser = userService.createUser(createUserRequest);
+            var apiUser = userService.createUser(createUserRequest);
             return ResponseEntity.status(HttpStatus.CREATED).body(apiUser);
         } catch (UserNameAlreadyExistsException userNameAlreadyExistsException) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
@@ -49,7 +49,7 @@ public class UserController {
         @NotNull @Valid @RequestBody UpdateNameUserRequest updateNameUserRequest
     ) {
         try {
-            ApiUser apiUser = userService.updateUserName(userId, updateNameUserRequest.name());
+            var apiUser = userService.updateUserName(userId, updateNameUserRequest.name());
             return ResponseEntity.ok(apiUser);
         } catch (UserNameAlreadyExistsException userNameAlreadyExistsException) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);

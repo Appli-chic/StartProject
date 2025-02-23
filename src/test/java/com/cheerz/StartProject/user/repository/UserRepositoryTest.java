@@ -5,8 +5,9 @@ import static com.cheerz.StartProject.user.entity.UserEntityTestData.JANE_SMITH_
 import static com.cheerz.StartProject.user.entity.UserEntityTestData.JOHN_DOE_USER_ENTITY;
 import static com.cheerz.StartProject.user.entity.UserEntityTestData.MIKE_SMITH_TO_SAVE_USER_ENTITY;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.cheerz.StartProject.user.entity.UserEntity;
+import com.cheerz.StartProject.user.exception.UserNameAlreadyExistsException;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import java.util.List;
-import java.util.Optional;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -27,42 +27,62 @@ public class UserRepositoryTest {
 
     @Test
     void getAllUsers_ShouldGetAllUsersInCreationOrder() {
-        List<UserEntity> allUsers = userRepository.getAllUsers();
+        var allUsers = userRepository.getAllUsers();
 
         assertThat(allUsers)
             .usingRecursiveComparison()
             .isEqualTo(List.of(BOB_JOHNSON_USER_ENTITY, JANE_SMITH_USER_ENTITY, JOHN_DOE_USER_ENTITY));
     }
 
-    @Test
-    void updateUserName_ShouldUpdateUserName() {
-        String newName = "New Name";
-        userRepository.updateUserName(BOB_JOHNSON_USER_ENTITY.getId(), newName);
-        UserEntity updatedUser = userRepository.getUserById(BOB_JOHNSON_USER_ENTITY.getId()).orElseThrow();
+    @Nested
+    class UpdateUserName {
+        @Test
+        void shouldUpdateUserName() {
+            var newName = "New Name";
+            userRepository.updateUserName(BOB_JOHNSON_USER_ENTITY.getId(), newName);
+            var updatedUser = userRepository.getUserById(BOB_JOHNSON_USER_ENTITY.getId()).orElseThrow();
 
-        assertThat(updatedUser.getName()).isEqualTo(newName);
-        assertThat(updatedUser)
-            .usingRecursiveComparison()
-            .ignoringFields("name")
-            .isEqualTo(BOB_JOHNSON_USER_ENTITY);
+            assertThat(updatedUser.getName()).isEqualTo(newName);
+            assertThat(updatedUser)
+                .usingRecursiveComparison()
+                .ignoringFields("name")
+                .isEqualTo(BOB_JOHNSON_USER_ENTITY);
+        }
+
+        @Test
+        void shouldThrowUserNameAlreadyExistsException() {
+            assertThrows(UserNameAlreadyExistsException.class, () ->
+                userRepository.updateUserName(BOB_JOHNSON_USER_ENTITY.getId(), JANE_SMITH_USER_ENTITY.getName())
+            );
+        }
     }
 
-    @Test
-    void saveUser_ShouldSaveUser() {
-        UserEntity createdUser = userRepository.save(
-            MIKE_SMITH_TO_SAVE_USER_ENTITY.getName(),
-            MIKE_SMITH_TO_SAVE_USER_ENTITY.getAge()
-        );
+    @Nested
+    class SaveUser {
+        @Test
+        void shouldSaveUser() {
+            var createdUser = userRepository.save(
+                MIKE_SMITH_TO_SAVE_USER_ENTITY.getName(),
+                MIKE_SMITH_TO_SAVE_USER_ENTITY.getAge()
+            );
 
-        assertThat(createdUser.getName()).isEqualTo(MIKE_SMITH_TO_SAVE_USER_ENTITY.getName());
-        assertThat(createdUser.getAge()).isEqualTo(MIKE_SMITH_TO_SAVE_USER_ENTITY.getAge());
+            assertThat(createdUser.getName()).isEqualTo(MIKE_SMITH_TO_SAVE_USER_ENTITY.getName());
+            assertThat(createdUser.getAge()).isEqualTo(MIKE_SMITH_TO_SAVE_USER_ENTITY.getAge());
+        }
+
+        @Test
+        void shouldThrowUserNameAlreadyExistsException() {
+            assertThrows(UserNameAlreadyExistsException.class, () ->
+                userRepository.save(BOB_JOHNSON_USER_ENTITY.getName(), BOB_JOHNSON_USER_ENTITY.getAge())
+            );
+        }
     }
 
     @Nested
     class GetUserByIdTests {
         @Test
         void shouldGetSpecificUser() {
-            UserEntity bobJohnsonUserEntity = userRepository
+            var bobJohnsonUserEntity = userRepository
                 .getUserById(BOB_JOHNSON_USER_ENTITY.getId())
                 .orElseThrow();
 
@@ -73,7 +93,7 @@ public class UserRepositoryTest {
 
         @Test
         void shouldGetEmptyUserIfUserNotFound() {
-            Optional<UserEntity> unknownUserEntity = userRepository.getUserById(-1L);
+            var unknownUserEntity = userRepository.getUserById(-1L);
             assertThat(unknownUserEntity).isEmpty();
         }
     }
