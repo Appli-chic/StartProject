@@ -10,12 +10,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import com.cheerz.StartProject.user.dto.ApiUser;
 import com.cheerz.StartProject.user.entity.UserEntity;
+import com.cheerz.StartProject.user.entity.UserEntityTestData;
 import com.cheerz.StartProject.user.exception.UserNameAlreadyExistsException;
 import com.cheerz.StartProject.user.repository.UserRepository;
 
@@ -78,14 +78,8 @@ class UserServiceTest {
         @Test
         void shouldUpdateUserName() {
             String newName = "New Name";
-            UserEntity expectedUser = new UserEntity(
-                JOHN_DOE_USER_ENTITY.getId(),
-                newName,
-                JOHN_DOE_USER_ENTITY.getAge()
-            );
+            UserEntity expectedUser = UserEntityTestData.copyWithNewName(JOHN_DOE_USER_ENTITY, newName);
 
-            // TODO: CHeck if I can delete
-            doNothing().when(userRepository).updateUserName(any(Long.class), any(String.class));
             when(userRepository.getUserById(JOHN_DOE_USER_ENTITY.getId())).thenReturn(Optional.of(expectedUser));
 
             ApiUser newUser = userService.updateUserName(JOHN_DOE_USER_ENTITY.getId(), newName);
@@ -97,8 +91,6 @@ class UserServiceTest {
 
         @Test
         void shouldThrowEntityNotFoundException() {
-            // TODO: CHeck if I can delete
-            doNothing().when(userRepository).updateUserName(any(Long.class), any(String.class));
             when(userRepository.getUserById(-1L)).thenReturn(Optional.empty());
 
             assertThrows(EntityNotFoundException.class, () ->

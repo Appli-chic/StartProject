@@ -7,8 +7,6 @@ import java.time.ZoneOffset;
 
 public class UserEntityTestData {
 
-    public static final UserEntity SIMPLE_JOHN_DOE_USER_ENTITY = new UserEntity("John Doe", 25);
-
     public static final UserEntity JOHN_DOE_USER_ENTITY = new UserEntity(
         1L,
         "John Doe",
@@ -34,13 +32,11 @@ public class UserEntityTestData {
     );
 
     @NotNull
-    public static UserEntity copyOf(@NotNull UserEntity original) {
+    public static UserEntity copyWithNewName(@NotNull UserEntity original, @NotNull String newName) {
         return new UserEntity(
             original.getId(),
-            original.getName(),
-            original.getAge(),
-            original.getCreatedAt(),
-            original.getUpdatedAt()
+            newName,
+            original.getAge()
         );
     }
 }

@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.cheerz.StartProject.user.dto.ApiUser;
+import com.cheerz.StartProject.user.dto.ApiUserTestData;
 import com.cheerz.StartProject.user.dto.CreateUserRequest;
 import com.cheerz.StartProject.user.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,11 +51,7 @@ class UserControllerTest {
 
     @Test
     void updateUserName_ShouldReturnUserUpdated() throws Exception {
-        ApiUser expectedApiUser = new ApiUser(
-            JOHN_DOE_USER_RESPONSE.id(),
-            NEW_NAME_USER_REQUEST.name(),
-            JOHN_DOE_USER_RESPONSE.age()
-        );
+        ApiUser expectedApiUser = ApiUserTestData.copyWithNewName(JOHN_DOE_USER_RESPONSE, NEW_NAME_USER_REQUEST.name());
 
         when(userService.updateUserName(expectedApiUser.id(), NEW_NAME_USER_REQUEST.name())).thenReturn(expectedApiUser);
         String expectedResponse = new ObjectMapper().writeValueAsString(expectedApiUser);
