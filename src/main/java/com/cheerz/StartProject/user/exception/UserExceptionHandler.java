@@ -8,12 +8,14 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.constraints.NotNull;
 
 @ControllerAdvice
 public class UserExceptionHandler {
+    @NotNull
     @ExceptionHandler(UserNameAlreadyExistsException.class)
     public ResponseEntity<ApiError> handleUserNameAlreadyExistsException(
-        UserNameAlreadyExistsException userNameAlreadyExistsException
+        @NotNull UserNameAlreadyExistsException userNameAlreadyExistsException
     ) {
         var error = new ApiError(
             userNameAlreadyExistsException.getMessage(),
@@ -23,8 +25,9 @@ public class UserExceptionHandler {
     }
 
     // TODO: Manage with a business model exception
+    @NotNull
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ApiError> handleUserNotFoundException(EntityNotFoundException entityNotFoundException) {
+    public ResponseEntity<ApiError> handleUserNotFoundException(@NotNull EntityNotFoundException entityNotFoundException) {
         var error = new ApiError(
             entityNotFoundException.getMessage(),
             HttpStatus.CONFLICT.value()
