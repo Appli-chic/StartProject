@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -32,7 +31,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Transactional
-    public void updateUserName(@NotNull Long userId, @NotNull String name) throws EntityNotFoundException {
+    public void updateUserName(@NotNull Long userId, @NotNull String name) throws UserNameAlreadyExistsException {
         try {
             entityManager.createQuery("UPDATE UserEntity user SET user.name = :name WHERE user.id = :user_id")
                 .setParameter("name", name)
@@ -58,7 +57,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Transactional
     @NotNull
-    public UserEntity save(@NotNull String name, @NotNull Integer age) throws EntityNotFoundException {
+    public UserEntity save(@NotNull String name, @NotNull Integer age) throws UserNameAlreadyExistsException {
         try {
             var user = new UserEntity(name, age);
             entityManager.persist(user);
