@@ -5,6 +5,8 @@ import com.cheerz.StartProject.user.dto.UpdateNameUserRequest;
 import com.cheerz.StartProject.user.dto.ApiUser;
 import com.cheerz.StartProject.user.exception.UserNameAlreadyExistsException;
 import com.cheerz.StartProject.user.service.UserService;
+
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
@@ -34,25 +36,17 @@ public class UserController {
     }
 
     @PostMapping()
-    ResponseEntity<ApiUser> createUser(@NotNull @Valid @RequestBody CreateUserRequest createUserRequest) {
-        try {
-            var apiUser = userService.createUser(createUserRequest);
-            return ResponseEntity.status(HttpStatus.CREATED).body(apiUser);
-        } catch (UserNameAlreadyExistsException userNameAlreadyExistsException) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
-        }
+    ResponseEntity<ApiUser> createUser(@NotNull @Valid @RequestBody CreateUserRequest createUserRequest) throws UserNameAlreadyExistsException {
+        var apiUser = userService.createUser(createUserRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(apiUser);
     }
 
     @PatchMapping("/{userId}")
     ResponseEntity<ApiUser> updateUserName(
         @NotNull @PathVariable Long userId,
         @NotNull @Valid @RequestBody UpdateNameUserRequest updateNameUserRequest
-    ) {
-        try {
-            var apiUser = userService.updateUserName(userId, updateNameUserRequest.name());
-            return ResponseEntity.ok(apiUser);
-        } catch (UserNameAlreadyExistsException userNameAlreadyExistsException) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
-        }
+    ) throws EntityNotFoundException, UserNameAlreadyExistsException {
+        var apiUser = userService.updateUserName(userId, updateNameUserRequest.name());
+        return ResponseEntity.ok(apiUser);
     }
 }

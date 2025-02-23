@@ -1,5 +1,6 @@
 package com.cheerz.StartProject.user;
 
+import static com.cheerz.StartProject.error.ApiErrorTestData.getUsernameAlreadyExistApiError;
 import static com.cheerz.StartProject.user.dto.ApiUserTestData.JOHN_DOE_USER_RESPONSE;
 import static com.cheerz.StartProject.user.dto.CreateUserRequestTestData.JOHN_DOE_USER_REQUEST;
 import static com.cheerz.StartProject.user.dto.UpdateNameUserRequestTestData.NEW_NAME_USER_REQUEST;
@@ -74,8 +75,13 @@ class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(createUserRequest);
 
+            var apiErrorJson = new ObjectMapper().writeValueAsString(
+                getUsernameAlreadyExistApiError(USER_NAME_ALREADY_EXISTS_EXCEPTION)
+            );
+
             mockMvc.perform(requestBuilder)
-                .andExpect(status().isConflict());
+                .andExpect(status().isConflict())
+                .andExpect(content().json(apiErrorJson));
         }
     }
 
@@ -107,8 +113,13 @@ class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(updateUserNameRequest);
 
+            var apiErrorJson = new ObjectMapper().writeValueAsString(
+                getUsernameAlreadyExistApiError(USER_NAME_ALREADY_EXISTS_EXCEPTION)
+            );
+
             mockMvc.perform(requestBuilder)
-                .andExpect(status().isConflict());
+                .andExpect(status().isConflict())
+                .andExpect(content().json(apiErrorJson));
         }
     }
 }

@@ -68,7 +68,7 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
-    private void handleUniqueNameException(ConstraintViolationException e, String name) throws UserNameAlreadyExistsException {
+    private void handleUniqueNameException(@NotNull ConstraintViolationException e, @NotNull String name) throws UserNameAlreadyExistsException {
         if (DatabaseExceptionHandler.isConstraintViolation(e, UNIQUE_NAME_CONSTRAINT)) {
             throw new UserNameAlreadyExistsException(name, e);
         }
