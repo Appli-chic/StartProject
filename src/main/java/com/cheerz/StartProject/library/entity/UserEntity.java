@@ -4,12 +4,14 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -34,6 +36,9 @@ public class UserEntity {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private Instant updatedAt;
+
+    @OneToMany(mappedBy = "user")
+    Set<UserBookEntity> userBooks;
 
     protected UserEntity() {}
 

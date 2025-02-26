@@ -1,10 +1,13 @@
 package com.cheerz.StartProject.library.entity;
 
+import java.util.Set;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -20,6 +23,9 @@ public class BookEntity {
 
     @Column(nullable = false)
     private String name;
+
+    @OneToMany(mappedBy = "book")
+    Set<UserBookEntity> userBooks;
 
     public BookEntity() {}
 

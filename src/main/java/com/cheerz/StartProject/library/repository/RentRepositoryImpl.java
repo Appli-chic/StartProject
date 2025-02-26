@@ -1,8 +1,5 @@
 package com.cheerz.StartProject.library.repository;
 
-import com.cheerz.StartProject.library.entity.UserBookEntity;
-import com.cheerz.StartProject.library.entity.keys.UserBookKey;
-
 import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.EntityManager;
@@ -17,7 +14,9 @@ public class RentRepositoryImpl implements RentRepository {
 
     @Transactional
     public void rentBook(@NotNull Long userId, @NotNull Long bookId) {
-        var userBookEntity = new UserBookEntity(new UserBookKey(userId, bookId));
-        entityManager.persist(userBookEntity);
+        entityManager.createNativeQuery("INSERT INTO users_books (user_id, book_id) VALUES (:userId, :bookId)")
+            .setParameter("userId", userId)
+            .setParameter("bookId", bookId)
+            .executeUpdate();
     }
 }
