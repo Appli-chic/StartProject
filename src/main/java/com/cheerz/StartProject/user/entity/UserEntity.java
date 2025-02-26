@@ -1,28 +1,19 @@
 package com.cheerz.StartProject.user.entity;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.Instant;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.Instant;
 
 @Entity
-@Table(
-    name = "users",
-    uniqueConstraints = {
-        @UniqueConstraint(
-            name = UserEntity.UNIQUE_NAME_CONSTRAINT,
-            columnNames = {"name"}
-        )
-    }
-)
+@Table(name = "users")
 public class UserEntity {
     public static final String UNIQUE_NAME_CONSTRAINT = "unique_constraint_users_name";
 
