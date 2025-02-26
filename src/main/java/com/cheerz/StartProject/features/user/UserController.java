@@ -51,9 +51,12 @@ public class UserController {
         return ResponseEntity.ok(apiUser);
     }
 
-//    @PostMapping("/book")
-//    public ResponseEntity rentBook(@NotNull @Valid @RequestBody RentBookRequest rentBookRequest) {
-//        rentRepository.rentBook(rentBookRequest.userId(), rentBookRequest.bookId());
-//        return ResponseEntity.status(HttpStatus.CREATED).body(null);
-//    }
+    @PostMapping("/{userId}/books/{bookId}/rent")
+    public ResponseEntity rentBook(
+        @NotNull @PathVariable Long userId,
+        @NotNull @PathVariable Long bookId
+    ) {
+        userService.rentBook(userId, bookId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(null);
+    }
 }

@@ -45,4 +45,8 @@ public class UserService {
 
         return userMapper.toUserResponse(userEntity);
     }
+
+    public void rentBook(@NotNull Long userId, @NotNull Long bookId) {
+        userRepository.rentBook(userId, bookId);
+    }
 }
