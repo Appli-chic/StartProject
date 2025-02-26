@@ -15,6 +15,16 @@ public class BookEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
+    private String isbn;
+
     @Column(nullable = false)
     private String name;
+
+    public BookEntity() {}
+
+    public BookEntity(String isbn, String name) {
+        this.isbn = isbn;
+        this.name = name;
+    }
 }
